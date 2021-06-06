@@ -7,7 +7,7 @@ fn main() {
         base_url: String::from("https://api.dnsdb.info/"),
         input_string: String::new(),
         input_history: Vec::new(),
-        API_KEY: None
+        API_KEY: None,
     };
     let ir = stdin();
     loop {
@@ -22,41 +22,40 @@ pub(crate) struct Client {
     base_url: String,
     input_string: String,
     input_history: Vec<String>,
-    API_KEY: Option<String>
-}impl Client {
-    
-pub fn handle_input(&mut self, tokens: Vec<String>) {
-    match &tokens[0] {
-        "ping" => {
-            self.ping();
-            return;
-        }
-        "set" => {
-            self.set(&tokens[1..]);
-            return;
-        }
-        _ => {
-            println!("Unrecognized token: \"{token}\".", token =tokens[0]);
-            return;
+    API_KEY: Option<String>,
+}
+impl Client {
+    pub fn handle_input(&mut self, tokens: Vec<String>) {
+        match &tokens[0] {
+            "ping" => {
+                self.ping();
+                return;
+            }
+            "set" => {
+                self.set(&tokens[1..]);
+                return;
+            }
+            _ => {
+                println!("Unrecognized token: \"{token}\".", token = tokens[0]);
+                return;
+            }
         }
     }
 
-}
+    fn ping(&mut self) {
+        let response = self.agent.get(format!("{}dnsdb/v2/ping", self.base_url));
+        println!("Response: {response}.", response = response.to_string());
+    }
 
-fn ping(&mut self) {
-            let response = self.agent.get(&self.base_url + String::from("dnsdb/v2/ping"));
-            println!("Response: {response}.", response=response.to_string());
-        }
-
-fn set(&self, input: &[String]) {
-    match input[0] {
-        "API_KEY" => {
-            self.API_KEY = Some(input[1].clone());
-            return;
-        }
-        _ => {
-            println!("Error: token \"{token}\" is invalid.", token=input[0]);
+    fn set(&self, input: &[String]) {
+        match input[0] {
+            "API_KEY" => {
+                self.API_KEY = Some(input[1].clone());
+                return;
+            }
+            _ => {
+                println!("Error: token \"{token}\" is invalid.", token = input[0]);
+            }
         }
     }
-}
 }

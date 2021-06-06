@@ -1,5 +1,5 @@
 [package]
-name = "dnsdb-cli-rs"
+name = "dnsdb-cli"
 version = "0.1.0"
 authors = ["mwaitzman <51432220+mwaitzman@users.noreply.github.com>"]
 edition = "2018"
@@ -7,5 +7,5 @@ edition = "2018"
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
-ureq = "2.1.1" { features = [ "json" ] }
+ureq = "2.1.1"
 #configparser = "2.0.1"

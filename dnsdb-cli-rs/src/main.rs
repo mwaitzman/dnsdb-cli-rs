@@ -1,74 +1,62 @@
-//use configparser::ini::Ini;
-//use std::error::Error;
-use std::env;
-//use key_handler::*;
-//use std::collections::VecDeque;
+use std::io::stdin;
+use ureq::*;
 
 fn main() {
-    println!("Starting program...");
-
-    #[cfg(debug_assertions)]
-    {
-        for argument in env::args() {
-            println!("{}", argument);
-        }
-    }
-
-    let mut args = helper::sort_args(env::args().collect());
-    let api_key = key_handler::do_api_key(&mut args);
-
-    println!("End of program");
-}
-
-mod helper {
-    //any rust collections with O(1) read(index) ,O(1) write(index), and O(1) delete(index)?
-    pub fn sort_args(args: Vec<String>) -> Vec<Vec<String>> {
-        enum ArgType {
-            Init, //initial state
-            CharFlagWithoutParameters,
-            CharFlag, ///char flags WITH at least one parameter
-            Parameter,
-        }
-        let mut state = ArgType::Init;
-        for arg in args {
-            match state {
-                ArgType::Init => {
-                    if arg.chars().nth(0).unwrap() != '-' {
-                        panic!("invalid argument");
-                    }
-                    unimplemented!();
-                }
-                _  => unimplemented!(),//TODO
-            }
-        }
-        unimplemented!();
+    let mut client = Client {
+        agent: ureq::AgentBuilder::new().build(),
+        base_url: String::from("https://api.dnsdb.info/"),
+        input_string: String::new(),
+        input_history: Vec::new(),
+        API_KEY: None
+    };
+    let ir = stdin();
+    loop {
+        ir.read_line(&mut client.input_string);
+        client.input_history.push(client.input_string.clone());
+        client.handle_input(client.input_string.split_whitespace().collect::<_>());
     }
 }
 
-mod key_handler {
-    pub fn do_api_key(input: &mut Vec<Vec<String>>) -> String {
-        unimplemented!();
-    }
-}
-
-//mod response_handler {
-
-//}
-
-//mod request_handler {
-    enum request_type {
-        lookup,
-        summarize,
-        ping,
-        rate_limit
-    }
-//}
-pub fn make_request(r: response_type, ) -> Result<API_response, API_Error> {
-
-}
-pub fn parse_response() ->
-static base_url = "https://api.dnsdb.info/";
-enum API_Error {
+pub(crate) struct Client {
+    agent: ureq::Agent,
+    base_url: String,
+    input_string: String,
+    input_history: Vec<String>,
+    API_KEY: Option<String>
+}impl Client {
     
+pub fn handle_input(&mut self, tokens: Vec<String>) {
+    match &tokens[0] {
+        "ping" => {
+            self.ping();
+            return;
+        }
+        "set" => {
+            self.set(&tokens[1..]);
+            return;
+        }
+        _ => {
+            println!("Unrecognized token: \"{token}\".", token =tokens[0]);
+            return;
+        }
+    }
+
 }
 
+fn ping(&mut self) {
+            let response = self.agent.get(&self.base_url + String::from("dnsdb/v2/ping"));
+            println!("Response: {response}.", response=response.to_string());
+        }
+
+fn set(&self, input: &[String]) {
+    match input[0] {
+        "API_KEY" => {
+            self.API_KEY = Some(input[1].clone());
+            return;
+        }
+        _ => {
+            println!("Error: token \"{token}\" is invalid.", token=input[0]);
+        }
+    }
+}
+}

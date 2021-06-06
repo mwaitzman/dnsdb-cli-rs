@@ -50,3 +50,25 @@ mod key_handler {
         unimplemented!();
     }
 }
+
+//mod response_handler {
+
+//}
+
+//mod request_handler {
+    enum request_type {
+        lookup,
+        summarize,
+        ping,
+        rate_limit
+    }
+//}
+pub fn make_request(r: response_type, ) -> Result<API_response, API_Error> {
+
+}
+pub fn parse_response() ->
+static base_url = "https://api.dnsdb.info/";
+enum API_Error {
+    
+}
+

@@ -36,6 +36,35 @@ impl Client {
                 self.set(tokens);
                 return;
             }
+            "rate_limit" => {
+                self.rate_limit();
+                return;
+            }
+            "listcommands" => {
+                println!("lookup, rate_limit, ping, set");
+            }
+            "help" => {
+                let token = tokens.next();
+                match token {
+                    None => {
+                        println!("For a list of commands, type \"listcommands\". For detailed information on a particular command, type \"help <command name>\"");
+                        return;
+                    }
+                    Some(_T) => {
+                        let token = token.unwrap();
+                        match token {
+                            "ping" => {
+                                println!("Pings the DNSDB database with a packet and prints the time taken to receive a response packet. This command takes no arguments (and in fact does not even require an API key).");
+                                return;
+                            }
+                            _ => {
+                                println!("Could not display help for a command named {}. Maybe it doesn't exist?", token);
+                                return;
+                            }
+                        }
+                    }
+                }
+            }
             _ => {
                 println!("Unrecognized token: \"{token}\".", token = token);
                 return;
@@ -61,5 +90,9 @@ impl Client {
                 println!("Error: token \"{token}\" is invalid.", token = token);
             }
         }
+    }
+
+    fn rate_limit(&mut self) {
+        todo!();
     }
 }
